@@ -21,6 +21,13 @@ async def upload_document(
     current_user: User = Depends(get_current_user),
     agency=Depends(get_current_agency),
 ):
+    # Reject image files — AI model does not support image input
+    if file.content_type and file.content_type.startswith("image/"):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Image files are not supported. Upload PDF or DOCX documents only.",
+        )
+
     # Verify tender scope
     result = await db.execute(select(Tender).where(Tender.id == tender_id, Tender.agency_id == agency.id))
     if not result.scalar_one_or_none():

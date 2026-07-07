@@ -20,7 +20,7 @@ from app.models.user import User, UserRole
 TEST_DB_URL = "sqlite+aiosqlite:///:memory:"
 
 # Register type override for pgvector Vector -> Text for SQLite
-from pgvector.sqlalchemy import Vector
+from pgvector.sqlalchemy import Vector  # noqa: E402
 
 
 @sa_event.listens_for(Base.metadata, "before_create")

@@ -7,14 +7,14 @@ from sqlalchemy.sql import func
 from app.core.database import Base
 
 
-class TaskStatus(str, enum.Enum):
+class TaskStatus(enum.StrEnum):
     PENDING = "pending"
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
     BLOCKED = "blocked"
 
 
-class TaskPriority(str, enum.Enum):
+class TaskPriority(enum.StrEnum):
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"

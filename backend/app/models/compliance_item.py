@@ -7,7 +7,7 @@ from sqlalchemy.sql import func
 from app.core.database import Base
 
 
-class ComplianceStatus(str, enum.Enum):
+class ComplianceStatus(enum.StrEnum):
     PENDING = "pending"
     MET = "met"
     NOT_MET = "not_met"

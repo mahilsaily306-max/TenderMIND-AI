@@ -20,7 +20,7 @@ class AuthService:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def authenticate(self, email: str, password: str, ip_address: str | None = None) -> dict | None:
+    async def authenticate(self, email: str, password: str, _ip_address: str | None = None) -> dict | None:
         result = await self.db.execute(select(User).where(User.email == email))
         user = result.scalar_one_or_none()
         if not user or not verify_password(password, user.password_hash):

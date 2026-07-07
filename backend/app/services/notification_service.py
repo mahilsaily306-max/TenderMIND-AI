@@ -50,9 +50,7 @@ class NotificationService:
         return True
 
     async def mark_all_read(self, user_id: int) -> None:
-        await self.db.execute(
-            update(Notification).where(Notification.user_id == user_id).values(is_read=True)
-        )
+        await self.db.execute(update(Notification).where(Notification.user_id == user_id).values(is_read=True))
         await self.db.commit()
 
     async def count_unread(self, user_id: int) -> int:

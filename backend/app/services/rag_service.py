@@ -30,6 +30,7 @@ class RAGService:
 
         # Get client_workspace_id from the tender
         from app.models.tender import Tender
+
         tender_result = await self.db.execute(select(Tender).where(Tender.id == doc.tender_id))
         tender = tender_result.scalar_one_or_none()
         client_workspace_id = tender.client_workspace_id if tender else 0
@@ -44,22 +45,28 @@ class RAGService:
 
             if doc.mime_type == "application/pdf" or file_path.suffix.lower() == ".pdf":
                 import pypdf
+
                 reader = pypdf.PdfReader(str(file_path))
                 page_count = len(reader.pages)
                 for i, page in enumerate(reader.pages):
                     text = page.extract_text() or ""
                     raw_text += f"\n\n--- PAGE {i + 1} ---\n{text}"
                     # Chunk by page
-                    chunks.append({
-                        "content": text,
-                        "page_number": i + 1,
-                        "clause_reference": None,
-                        "chunk_index": i,
-                    })
+                    chunks.append(
+                        {
+                            "content": text,
+                            "page_number": i + 1,
+                            "clause_reference": None,
+                            "chunk_index": i,
+                        }
+                    )
 
-            elif doc.mime_type in ("application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                                    "application/msword") or file_path.suffix.lower() in (".docx", ".doc"):
+            elif doc.mime_type in (
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                "application/msword",
+            ) or file_path.suffix.lower() in (".docx", ".doc"):
                 import docx
+
                 d = docx.Document(str(file_path))
                 full_text = "\n".join(p.text for p in d.paragraphs)
                 raw_text = full_text
@@ -67,26 +74,31 @@ class RAGService:
                 # Split into ~1000-char chunks
                 chunk_size = 1000
                 for i in range(0, len(full_text), chunk_size):
-                    chunks.append({
-                        "content": full_text[i:i + chunk_size],
-                        "page_number": None,
-                        "clause_reference": None,
-                        "chunk_index": len(chunks),
-                    })
+                    chunks.append(
+                        {
+                            "content": full_text[i : i + chunk_size],
+                            "page_number": None,
+                            "clause_reference": None,
+                            "chunk_index": len(chunks),
+                        }
+                    )
             else:
                 # Try OCR with tesseract
                 try:
                     import pytesseract
                     from PIL import Image
+
                     img = Image.open(file_path)
                     raw_text = pytesseract.image_to_string(img)
                     page_count = 1
-                    chunks.append({
-                        "content": raw_text,
-                        "page_number": 1,
-                        "clause_reference": None,
-                        "chunk_index": 0,
-                    })
+                    chunks.append(
+                        {
+                            "content": raw_text,
+                            "page_number": 1,
+                            "clause_reference": None,
+                            "chunk_index": 0,
+                        }
+                    )
                 except Exception as exc:
                     raise ValueError(f"Unsupported file type: {doc.mime_type}") from exc
 
@@ -119,15 +131,14 @@ class RAGService:
 
     async def generate_embeddings(self, document_id: int) -> None:
         """Generate embeddings for all chunks of a document."""
-        result = await self.db.execute(
-            select(DocumentChunk).where(DocumentChunk.document_id == document_id)
-        )
+        result = await self.db.execute(select(DocumentChunk).where(DocumentChunk.document_id == document_id))
         chunks = result.scalars().all()
 
         if not chunks:
             return
 
         import openai
+
         client = openai.AsyncOpenAI(api_key=settings.openai_api_key)
 
         for chunk in chunks:
@@ -221,6 +232,7 @@ class RAGService:
     async def vector_search(self, query: str, client_workspace_id: int, top_k: int = 5) -> list[dict]:
         """Search document chunks by vector similarity."""
         import openai
+
         client = openai.AsyncOpenAI(api_key=settings.openai_api_key)
         resp = await client.embeddings.create(input=query, model=settings.embedding_model)
         query_embedding = resp.data[0].embedding

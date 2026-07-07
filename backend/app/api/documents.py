@@ -22,9 +22,7 @@ async def upload_document(
     agency=Depends(get_current_agency),
 ):
     # Verify tender scope
-    result = await db.execute(
-        select(Tender).where(Tender.id == tender_id, Tender.agency_id == agency.id)
-    )
+    result = await db.execute(select(Tender).where(Tender.id == tender_id, Tender.agency_id == agency.id))
     if not result.scalar_one_or_none():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tender not found")
 
@@ -55,9 +53,7 @@ async def list_documents(
     agency=Depends(get_current_agency),
 ):
     # Verify tender scope
-    result = await db.execute(
-        select(Tender).where(Tender.id == tender_id, Tender.agency_id == agency.id)
-    )
+    result = await db.execute(select(Tender).where(Tender.id == tender_id, Tender.agency_id == agency.id))
     if not result.scalar_one_or_none():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tender not found")
 
@@ -89,9 +85,7 @@ async def delete_document(
     if not doc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Document not found")
     # Verify tender scope
-    result = await db.execute(
-        select(Tender).where(Tender.id == doc.tender_id, Tender.agency_id == agency.id)
-    )
+    result = await db.execute(select(Tender).where(Tender.id == doc.tender_id, Tender.agency_id == agency.id))
     if not result.scalar_one_or_none():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Document not found")
     await service.delete_document(document_id)

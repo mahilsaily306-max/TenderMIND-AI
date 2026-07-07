@@ -38,9 +38,7 @@ class WorkspaceService:
 
     async def list_workspaces(self, agency_id: int) -> list[ClientWorkspace]:
         result = await self.db.execute(
-            select(ClientWorkspace)
-            .where(ClientWorkspace.agency_id == agency_id)
-            .order_by(ClientWorkspace.name)
+            select(ClientWorkspace).where(ClientWorkspace.agency_id == agency_id).order_by(ClientWorkspace.name)
         )
         return list(result.scalars().all())
 

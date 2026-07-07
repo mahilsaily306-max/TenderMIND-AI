@@ -120,9 +120,7 @@ async def get_tender(
     current_user: User = Depends(get_current_user),
     agency=Depends(get_current_agency),
 ):
-    result = await db.execute(
-        select(Tender).where(Tender.id == tender_id, Tender.agency_id == agency.id)
-    )
+    result = await db.execute(select(Tender).where(Tender.id == tender_id, Tender.agency_id == agency.id))
     tender = result.scalar_one_or_none()
     if not tender:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tender not found")
@@ -155,9 +153,7 @@ async def update_tender(
     current_user: User = Depends(require_role("owner", "manager")),
     agency=Depends(get_current_agency),
 ):
-    result = await db.execute(
-        select(Tender).where(Tender.id == tender_id, Tender.agency_id == agency.id)
-    )
+    result = await db.execute(select(Tender).where(Tender.id == tender_id, Tender.agency_id == agency.id))
     tender = result.scalar_one_or_none()
     if not tender:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tender not found")
@@ -167,7 +163,10 @@ async def update_tender(
         if req.status not in allowed:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Cannot transition from {tender.status.value} to {req.status.value}. Allowed: {[s.value for s in allowed]}",
+                detail=(
+                    f"Cannot transition from {tender.status.value} to {req.status.value}. "
+                    f"Allowed: {[s.value for s in allowed]}"
+                ),
             )
         tender.status = req.status
 
@@ -185,9 +184,7 @@ async def update_tender(
         tender.currency = req.currency
     if req.assigned_to is not None:
         # Verify user belongs to same agency
-        user_result = await db.execute(
-            select(User).where(User.id == req.assigned_to, User.agency_id == agency.id)
-        )
+        user_result = await db.execute(select(User).where(User.id == req.assigned_to, User.agency_id == agency.id))
         if not user_result.scalar_one_or_none():
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Assigned user not found in agency")
         tender.assigned_to = req.assigned_to
@@ -205,9 +202,7 @@ async def delete_tender(
     current_user: User = Depends(require_role("owner")),
     agency=Depends(get_current_agency),
 ):
-    result = await db.execute(
-        select(Tender).where(Tender.id == tender_id, Tender.agency_id == agency.id)
-    )
+    result = await db.execute(select(Tender).where(Tender.id == tender_id, Tender.agency_id == agency.id))
     tender = result.scalar_one_or_none()
     if not tender:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tender not found")

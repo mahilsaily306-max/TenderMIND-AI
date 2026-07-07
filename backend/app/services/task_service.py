@@ -70,15 +70,11 @@ class TaskService:
         return task
 
     async def list_tasks(self, tender_id: int) -> list[Task]:
-        result = await self.db.execute(
-            select(Task).where(Task.tender_id == tender_id).order_by(Task.created_at.desc())
-        )
+        result = await self.db.execute(select(Task).where(Task.tender_id == tender_id).order_by(Task.created_at.desc()))
         return list(result.scalars().all())
 
     async def list_user_tasks(self, user_id: int) -> list[Task]:
-        result = await self.db.execute(
-            select(Task).where(Task.assigned_to == user_id).order_by(Task.created_at.desc())
-        )
+        result = await self.db.execute(select(Task).where(Task.assigned_to == user_id).order_by(Task.created_at.desc()))
         return list(result.scalars().all())
 
     async def delete_task(self, task_id: int) -> bool:

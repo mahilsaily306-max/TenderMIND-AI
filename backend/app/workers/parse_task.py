@@ -29,10 +29,12 @@ def process_document(self, document_id: int, tender_id: int):
             logger.info("Document %d parsed", document_id)
             await service.generate_embeddings(document_id)
             extraction = await service.extract_requirements(document_id, tender_id)
-            logger.info("Requirements extracted for tender %d: %d fields, %d compliance items",
-                        tender_id,
-                        len(extraction.get("fields", {})),
-                        len(extraction.get("compliance_items", [])))
+            logger.info(
+                "Requirements extracted for tender %d: %d fields, %d compliance items",
+                tender_id,
+                len(extraction.get("fields", {})),
+                len(extraction.get("compliance_items", [])),
+            )
             return {"document_id": document_id, "tender_id": tender_id, "status": "completed"}
 
     try:

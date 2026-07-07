@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class BidReadinessService:
     """Computes Bid Readiness Score using transparent weighted formula.
-    
+
     The score is NOT an opaque LLM call — it's calculated from sub-scores
     with configurable weights:
     - compliance (30%): how many compliance items are met
@@ -82,9 +82,7 @@ class BidReadinessService:
         return score
 
     async def _calc_compliance(self, tender_id: int) -> float:
-        result = await self.db.execute(
-            select(ComplianceItem).where(ComplianceItem.tender_id == tender_id)
-        )
+        result = await self.db.execute(select(ComplianceItem).where(ComplianceItem.tender_id == tender_id))
         items = result.scalars().all()
         if not items:
             return 0.5
@@ -93,6 +91,7 @@ class BidReadinessService:
 
     async def _calc_experience(self, tender: Tender) -> float:
         from app.models.knowledge_base_item import KnowledgeBaseItem
+
         result = await self.db.execute(
             select(KnowledgeBaseItem).where(
                 KnowledgeBaseItem.agency_id == tender.agency_id,
@@ -106,9 +105,8 @@ class BidReadinessService:
 
     async def _calc_capacity(self, tender_id: int) -> float:
         from app.models.task import Task
-        result = await self.db.execute(
-            select(Task).where(Task.tender_id == tender_id)
-        )
+
+        result = await self.db.execute(select(Task).where(Task.tender_id == tender_id))
         tasks = result.scalars().all()
         if not tasks:
             return 0.7

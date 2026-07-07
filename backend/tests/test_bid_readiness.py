@@ -1,4 +1,5 @@
 """Bid Readiness Score calculation tests."""
+
 import pytest
 from httpx import AsyncClient
 
@@ -14,8 +15,9 @@ def _token(user):
 class TestBidReadiness:
     async def test_calculate_score(self, client: AsyncClient, owner_user, tender):
         token = _token(owner_user)
-        resp = await client.post(f"/api/v1/bid-readiness/calculate/{tender.id}",
-                                 headers={"Authorization": f"Bearer {token}"})
+        resp = await client.post(
+            f"/api/v1/bid-readiness/calculate/{tender.id}", headers={"Authorization": f"Bearer {token}"}
+        )
         assert resp.status_code == 200, resp.text
         data = resp.json()
         assert "overall_score" in data
@@ -30,10 +32,8 @@ class TestBidReadiness:
 
     async def test_score_persisted_on_tender(self, client: AsyncClient, owner_user, tender):
         token = _token(owner_user)
-        await client.post(f"/api/v1/bid-readiness/calculate/{tender.id}",
-                          headers={"Authorization": f"Bearer {token}"})
-        resp = await client.get(f"/api/v1/tenders/{tender.id}",
-                                headers={"Authorization": f"Bearer {token}"})
+        await client.post(f"/api/v1/bid-readiness/calculate/{tender.id}", headers={"Authorization": f"Bearer {token}"})
+        resp = await client.get(f"/api/v1/tenders/{tender.id}", headers={"Authorization": f"Bearer {token}"})
         assert resp.status_code == 200
         assert resp.json()["ai_readiness_score"] is not None
         assert resp.json()["ai_go_nogo_recommendation"] in ("go", "no_go")
@@ -41,15 +41,12 @@ class TestBidReadiness:
 
     async def test_get_latest_score(self, client: AsyncClient, owner_user, tender):
         token = _token(owner_user)
-        await client.post(f"/api/v1/bid-readiness/calculate/{tender.id}",
-                          headers={"Authorization": f"Bearer {token}"})
-        resp = await client.get(f"/api/v1/bid-readiness/{tender.id}",
-                                headers={"Authorization": f"Bearer {token}"})
+        await client.post(f"/api/v1/bid-readiness/calculate/{tender.id}", headers={"Authorization": f"Bearer {token}"})
+        resp = await client.get(f"/api/v1/bid-readiness/{tender.id}", headers={"Authorization": f"Bearer {token}"})
         assert resp.status_code == 200
         assert resp.json()["overall_score"] is not None
 
     async def test_score_before_calculation(self, client: AsyncClient, owner_user, tender):
         token = _token(owner_user)
-        resp = await client.get(f"/api/v1/bid-readiness/{tender.id}",
-                                headers={"Authorization": f"Bearer {token}"})
+        resp = await client.get(f"/api/v1/bid-readiness/{tender.id}", headers={"Authorization": f"Bearer {token}"})
         assert resp.status_code == 404

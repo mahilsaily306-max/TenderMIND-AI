@@ -64,7 +64,9 @@ class DocumentService:
         await self.db.commit()
         return True
 
-    async def update_status(self, document_id: int, status: DocumentStatus, error_message: str | None = None) -> Document | None:
+    async def update_status(
+        self, document_id: int, status: DocumentStatus, error_message: str | None = None
+    ) -> Document | None:
         doc = await self.get_document(document_id)
         if not doc:
             return None

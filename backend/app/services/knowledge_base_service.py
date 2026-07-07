@@ -34,7 +34,9 @@ class KnowledgeBaseService:
         await self.db.refresh(item)
         return item
 
-    async def list_items(self, agency_id: int, client_workspace_id: int | None = None, category: str | None = None) -> list[KnowledgeBaseItem]:
+    async def list_items(
+        self, agency_id: int, client_workspace_id: int | None = None, category: str | None = None
+    ) -> list[KnowledgeBaseItem]:
         query = select(KnowledgeBaseItem).where(KnowledgeBaseItem.agency_id == agency_id)
         if client_workspace_id:
             query = query.where(KnowledgeBaseItem.client_workspace_id == client_workspace_id)
@@ -58,8 +60,11 @@ class KnowledgeBaseService:
         await self.db.commit()
         return True
 
-    async def search(self, agency_id: int, query: str, client_workspace_id: int | None = None) -> list[KnowledgeBaseItem]:
+    async def search(
+        self, agency_id: int, query: str, client_workspace_id: int | None = None
+    ) -> list[KnowledgeBaseItem]:
         from sqlalchemy import or_
+
         search_filter = or_(
             KnowledgeBaseItem.title.ilike(f"%{query}%"),
             KnowledgeBaseItem.content.ilike(f"%{query}%"),

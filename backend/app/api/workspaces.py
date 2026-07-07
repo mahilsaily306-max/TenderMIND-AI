@@ -91,7 +91,9 @@ async def update_workspace(
     agency=Depends(get_current_agency),
 ):
     service = WorkspaceService(db)
-    updated = await service.update_workspace(workspace_id, agency.id, name=req.name, description=req.description, is_active=req.is_active)
+    updated = await service.update_workspace(
+        workspace_id, agency.id, name=req.name, description=req.description, is_active=req.is_active
+    )
     if not updated:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Workspace not found")
     await create_audit_log(db, agency.id, current_user.id, "workspace.update", "client_workspace", workspace_id)

@@ -7,7 +7,7 @@ from sqlalchemy.sql import func
 from app.core.database import Base
 
 
-class UserRole(str, enum.Enum):
+class UserRole(enum.StrEnum):
     OWNER = "owner"
     MANAGER = "manager"
     EMPLOYEE = "employee"

@@ -103,7 +103,8 @@ async def update_user(
 ):
     service = UserService(db)
     user = await service.update_user(
-        user_id, agency.id,
+        user_id,
+        agency.id,
         email=req.email,
         password=req.password,
         full_name=req.full_name,

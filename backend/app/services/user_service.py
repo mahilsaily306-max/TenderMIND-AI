@@ -30,9 +30,7 @@ class UserService:
         return user
 
     async def get_user(self, user_id: int, agency_id: int) -> User | None:
-        result = await self.db.execute(
-            select(User).where(User.id == user_id, User.agency_id == agency_id)
-        )
+        result = await self.db.execute(select(User).where(User.id == user_id, User.agency_id == agency_id))
         return result.scalar_one_or_none()
 
     async def update_user(self, user_id: int, agency_id: int, **kwargs) -> User | None:
@@ -49,9 +47,7 @@ class UserService:
         return user
 
     async def list_users(self, agency_id: int) -> list[User]:
-        result = await self.db.execute(
-            select(User).where(User.agency_id == agency_id).order_by(User.full_name)
-        )
+        result = await self.db.execute(select(User).where(User.agency_id == agency_id).order_by(User.full_name))
         return list(result.scalars().all())
 
     async def deactivate_user(self, user_id: int, agency_id: int) -> bool:

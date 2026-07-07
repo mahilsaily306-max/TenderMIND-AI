@@ -85,7 +85,9 @@ async def setup_2fa(current_user: User = Depends(get_current_user), db: AsyncSes
 
 
 @router.post("/2fa/enable")
-async def enable_2fa(req: Enable2FARequest, current_user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
+async def enable_2fa(
+    req: Enable2FARequest, current_user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)
+):
     service = AuthService(db)
     if not await service.enable_2fa(current_user, req.token):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid 2FA token")
@@ -105,7 +107,9 @@ async def refresh_token(req: RefreshRequest):
     if not payload or payload.get("type") != "refresh":
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
 
-    access_token = create_access_token({"sub": payload["sub"], "role": payload.get("role"), "agency_id": payload.get("agency_id")})
+    access_token = create_access_token(
+        {"sub": payload["sub"], "role": payload.get("role"), "agency_id": payload.get("agency_id")}
+    )
     return {"access_token": access_token, "token_type": "bearer"}
 
 

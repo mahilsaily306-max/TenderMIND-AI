@@ -28,13 +28,15 @@ class Settings(BaseSettings):
     llm_model: str = "gpt-4o"
 
     # Bid Readiness Weights (JSON string in env)
-    bid_readiness_weights: str = json.dumps({
-        "compliance": 0.30,
-        "experience": 0.25,
-        "capacity": 0.20,
-        "risk": 0.15,
-        "past_performance": 0.10,
-    })
+    bid_readiness_weights: str = json.dumps(
+        {
+            "compliance": 0.30,
+            "experience": 0.25,
+            "capacity": 0.20,
+            "risk": 0.15,
+            "past_performance": 0.10,
+        }
+    )
 
     # Storage
     storage_backend: str = "local"

@@ -1,4 +1,5 @@
 """Unit tests for security utilities — no DB required."""
+
 from app.core.security import (
     create_access_token,
     decode_token,
@@ -31,6 +32,7 @@ def test_totp():
     secret = generate_totp_secret()
     assert len(secret) > 0
     import pyotp
+
     totp = pyotp.TOTP(secret)
     valid_token = totp.now()
     assert verify_totp(secret, valid_token)

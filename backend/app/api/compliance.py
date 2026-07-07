@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
 from sqlalchemy import select
@@ -35,9 +34,7 @@ async def list_compliance_items(
     agency=Depends(get_current_agency),
 ):
     # Verify tender scope
-    result = await db.execute(
-        select(Tender).where(Tender.id == tender_id, Tender.agency_id == agency.id)
-    )
+    result = await db.execute(select(Tender).where(Tender.id == tender_id, Tender.agency_id == agency.id))
     if not result.scalar_one_or_none():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tender not found")
 
@@ -74,9 +71,7 @@ async def update_compliance_item(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Compliance item not found")
 
     # Verify tender scope
-    t_result = await db.execute(
-        select(Tender).where(Tender.id == item.tender_id, Tender.agency_id == agency.id)
-    )
+    t_result = await db.execute(select(Tender).where(Tender.id == item.tender_id, Tender.agency_id == agency.id))
     if not t_result.scalar_one_or_none():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Compliance item not found")
 
@@ -103,9 +98,7 @@ async def create_compliance_item(
     agency=Depends(get_current_agency),
 ):
     # Verify tender scope
-    result = await db.execute(
-        select(Tender).where(Tender.id == tender_id, Tender.agency_id == agency.id)
-    )
+    result = await db.execute(select(Tender).where(Tender.id == tender_id, Tender.agency_id == agency.id))
     if not result.scalar_one_or_none():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tender not found")
 

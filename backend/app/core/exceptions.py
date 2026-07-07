@@ -50,7 +50,9 @@ class ConflictException(AppException):
 
 class ValidationException(AppException):
     def __init__(self, message: str, details: dict | None = None):
-        super().__init__(message, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, error_code="validation_error", details=details)
+        super().__init__(
+            message, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, error_code="validation_error", details=details
+        )
 
 
 def error_response(status_code: int, message: str, error_code: str, details: dict | None = None) -> JSONResponse:

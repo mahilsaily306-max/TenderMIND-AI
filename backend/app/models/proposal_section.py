@@ -7,7 +7,7 @@ from sqlalchemy.sql import func
 from app.core.database import Base
 
 
-class ProposalSectionStatus(str, enum.Enum):
+class ProposalSectionStatus(enum.StrEnum):
     DRAFT = "draft"
     AI_GENERATED = "ai_generated"
     REVIEWED = "reviewed"

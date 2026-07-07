@@ -1,4 +1,5 @@
 """Auth API integration tests."""
+
 import pytest
 from httpx import AsyncClient
 
@@ -28,7 +29,9 @@ class TestAuth:
         assert data["user"]["role"] == "owner"
 
     async def test_me_endpoint(self, client: AsyncClient, owner_user):
-        token = create_access_token({"sub": str(owner_user.id), "role": owner_user.role.value, "agency_id": owner_user.agency_id})
+        token = create_access_token(
+            {"sub": str(owner_user.id), "role": owner_user.role.value, "agency_id": owner_user.agency_id}
+        )
         resp = await client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {token}"})
         assert resp.status_code == 200
         assert resp.json()["email"] == owner_user.email

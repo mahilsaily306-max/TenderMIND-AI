@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
 from sqlalchemy import select
@@ -42,9 +41,7 @@ async def create_task(
     agency=Depends(get_current_agency),
 ):
     # Verify tender belongs to agency
-    result = await db.execute(
-        select(Tender).where(Tender.id == req.tender_id, Tender.agency_id == agency.id)
-    )
+    result = await db.execute(select(Tender).where(Tender.id == req.tender_id, Tender.agency_id == agency.id))
     if not result.scalar_one_or_none():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tender not found")
 

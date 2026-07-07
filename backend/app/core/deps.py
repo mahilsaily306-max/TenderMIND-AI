@@ -1,4 +1,3 @@
-
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy import select
@@ -53,4 +52,5 @@ def require_role(*roles: str):
                 detail=f"Role '{current_user.role}' not permitted. Required: {', '.join(roles)}",
             )
         return current_user
+
     return role_checker

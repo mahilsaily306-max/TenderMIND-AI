@@ -44,8 +44,7 @@ async def list_agencies(
     service = AgencyService(db)
     agencies = await service.list_agencies()
     return [
-        {"id": a.id, "name": a.name, "slug": a.slug, "domain": a.domain, "is_active": a.is_active}
-        for a in agencies
+        {"id": a.id, "name": a.name, "slug": a.slug, "domain": a.domain, "is_active": a.is_active} for a in agencies
     ]
 
 

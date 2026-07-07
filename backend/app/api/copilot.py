@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel
 from sqlalchemy import select
@@ -62,9 +61,7 @@ async def create_proposal_section(
     current_user: User = Depends(get_current_user),
     agency=Depends(get_current_agency),
 ):
-    result = await db.execute(
-        select(Tender).where(Tender.id == tender_id, Tender.agency_id == agency.id)
-    )
+    result = await db.execute(select(Tender).where(Tender.id == tender_id, Tender.agency_id == agency.id))
     if not result.scalar_one_or_none():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tender not found")
 
@@ -92,9 +89,7 @@ async def list_sections(
     current_user: User = Depends(get_current_user),
     agency=Depends(get_current_agency),
 ):
-    result = await db.execute(
-        select(Tender).where(Tender.id == tender_id, Tender.agency_id == agency.id)
-    )
+    result = await db.execute(select(Tender).where(Tender.id == tender_id, Tender.agency_id == agency.id))
     if not result.scalar_one_or_none():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tender not found")
 

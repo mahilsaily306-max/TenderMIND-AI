@@ -7,7 +7,7 @@ from sqlalchemy.sql import func
 from app.core.database import Base
 
 
-class NotificationType(str, enum.Enum):
+class NotificationType(enum.StrEnum):
     TENDER_ASSIGNED = "tender_assigned"
     TASK_ASSIGNED = "task_assigned"
     STATUS_CHANGE = "status_change"

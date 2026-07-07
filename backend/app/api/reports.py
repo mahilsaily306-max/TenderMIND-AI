@@ -23,7 +23,7 @@ async def get_stats(
     tenders_result = await db.execute(
         select(Tender.status, func.count(Tender.id)).where(Tender.agency_id == agency.id).group_by(Tender.status)
     )
-    tender_stats = {row[0].value if hasattr(row[0], 'value') else row[0]: row[1] for row in tenders_result.fetchall()}
+    tender_stats = {row[0].value if hasattr(row[0], "value") else row[0]: row[1] for row in tenders_result.fetchall()}
 
     total_tenders = sum(tender_stats.values())
     won = tender_stats.get("won", 0)
@@ -36,7 +36,7 @@ async def get_stats(
         .where(Tender.agency_id == agency.id)
         .group_by(Task.status)
     )
-    task_stats = {row[0].value if hasattr(row[0], 'value') else row[0]: row[1] for row in tasks_result.fetchall()}
+    task_stats = {row[0].value if hasattr(row[0], "value") else row[0]: row[1] for row in tasks_result.fetchall()}
 
     # Latest scores (scoped to agency)
     scores_result = await db.execute(
@@ -73,10 +73,12 @@ async def get_pipeline(
 ):
     """Get tender pipeline by deadline."""
     result = await db.execute(
-        select(Tender).where(
+        select(Tender)
+        .where(
             Tender.agency_id == agency.id,
             Tender.status.in_(["identified", "qualification", "in_progress", "internal_review"]),
-        ).order_by(Tender.bid_deadline.asc())
+        )
+        .order_by(Tender.bid_deadline.asc())
     )
     tenders = result.scalars().all()
     return [

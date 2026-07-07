@@ -1,4 +1,5 @@
 """Audit log / timeline endpoint."""
+
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -21,9 +22,7 @@ async def get_tender_timeline(
     agency=Depends(get_current_agency),
 ):
     # Verify tender scope
-    result = await db.execute(
-        select(Tender).where(Tender.id == tender_id, Tender.agency_id == agency.id)
-    )
+    result = await db.execute(select(Tender).where(Tender.id == tender_id, Tender.agency_id == agency.id))
     if not result.scalar_one_or_none():
         return []
 

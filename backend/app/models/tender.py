@@ -7,7 +7,7 @@ from sqlalchemy.sql import func
 from app.core.database import Base
 
 
-class TenderStatus(str, enum.Enum):
+class TenderStatus(enum.StrEnum):
     IDENTIFIED = "identified"
     QUALIFICATION = "qualification"
     IN_PROGRESS = "in_progress"

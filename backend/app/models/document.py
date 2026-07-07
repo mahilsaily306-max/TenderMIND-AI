@@ -7,7 +7,7 @@ from sqlalchemy.sql import func
 from app.core.database import Base
 
 
-class DocumentStatus(str, enum.Enum):
+class DocumentStatus(enum.StrEnum):
     PENDING = "pending"
     PROCESSING = "processing"
     PARSED = "parsed"

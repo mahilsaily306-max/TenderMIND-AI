@@ -7,7 +7,7 @@ from sqlalchemy.sql import func
 from app.core.database import Base
 
 
-class SubmissionStatus(str, enum.Enum):
+class SubmissionStatus(enum.StrEnum):
     DRAFT = "draft"
     SUBMITTED = "submitted"
     ACKNOWLEDGED = "acknowledged"

@@ -19,12 +19,15 @@ class AIProvider:
             return self._client
         if self.provider == "openai":
             import openai
+
             self._client = openai.AsyncOpenAI(api_key=settings.openai_api_key)
         elif self.provider == "anthropic":
             import anthropic
+
             self._client = anthropic.AsyncAnthropic(api_key=settings.anthropic_api_key)
         else:
             from openai import AsyncOpenAI
+
             self._client = AsyncOpenAI(base_url=settings.ollama_base_url, api_key="ollama")
         return self._client
 
@@ -108,9 +111,12 @@ async def extract_tender_requirements(document_text: str, document_chunks: list[
     """Extract requirements from tender document text with mandatory citations."""
     chunk_context = ""
     if document_chunks:
-        chunk_context = "\n\n---DOCUMENT CHUNKS---\n" + "\n\n".join(
-            f"[Page {c.get('page_number', '?')}, Clause {c.get('clause_reference', 'N/A')}]: {c.get('content', '')[:2000]}"
-            for c in document_chunks[:20]
+        chunk_context = (
+            "\n\n---DOCUMENT CHUNKS---\n"
+            + "\n\n".join(
+                f"[Page {c.get('page_number', '?')}, Clause {c.get('clause_reference', 'N/A')}]: {c.get('content', '')[:2000]}"  # noqa: E501
+                for c in document_chunks[:20]
+            )
         )
 
     prompt = f"""Extract all requirements and structured fields from this tender document.
